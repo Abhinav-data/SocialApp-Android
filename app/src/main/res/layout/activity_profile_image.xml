@@ -13,16 +13,6 @@
         android:layout_height="wrap_content"
         android:text="Choose Image" />
 
-    <TextView
-        android:id="@+id/edit_text_file_name"
-        android:layout_width="275dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginLeft="16dp"
-        android:layout_toEndOf="@+id/button_choose_image"
-        android:text="Your Username"
-        android:textSize="25dp"/>
-
     <Button
         android:id="@+id/button_upload"
         android:layout_width="wrap_content"

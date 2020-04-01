@@ -99,14 +99,9 @@ public class ProfileActivity extends AppCompatActivity {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            String image = "" + dataSnapshot.child("profileImageUrl").getValue();
+            Picasso.get().load(image).placeholder(R.drawable.ic_account).fit().centerCrop().into(profileImage);
 
-                    String image = "" + dataSnapshot.child("profileImageUrl").getValue();
-                try {
-                    Picasso.get().load(image).into(profileImage);
-
-                } catch (Exception e) {
-                    Picasso.get().load(R.drawable.ic_account).into(profileImage);
-                }
             }
 
             @Override
@@ -175,7 +170,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void retrieveDataFromDB() {
-        yStatus=findViewById(R.id.yourStatus);
+//        yStatus=findViewById(R.id.yourStatus);
 //        statusTV = (EditText) findViewById(R.id.statusValue);
 
         uName=findViewById(R.id.uName);
@@ -183,9 +178,9 @@ public class ProfileActivity extends AppCompatActivity {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    String status = dataSnapshot.child("status").getValue(String.class);
+//                    String status = dataSnapshot.child("status").getValue(String.class);
                     String uName1 = dataSnapshot.child("username").getValue(String.class);
-                    yStatus.setText(status);
+//                    yStatus.setText(status);
                     uName.setText(uName1);
 
             }

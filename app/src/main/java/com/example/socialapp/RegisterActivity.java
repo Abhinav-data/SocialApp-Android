@@ -42,7 +42,6 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         InitializeUI();
-        Log.i("Register Activity","Arrived");
         mAuth=FirebaseAuth.getInstance();
         regBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,6 +72,10 @@ public class RegisterActivity extends AppCompatActivity {
         email=emailTV.getText().toString();
         password=passwordTV.getText().toString();
         username=usernameTv.getText().toString();
+        if (TextUtils.isEmpty(username)) {
+            Toast.makeText(getApplicationContext(), "Please enter username!", Toast.LENGTH_LONG).show();
+            return;
+        }
         if (TextUtils.isEmpty(email)) {
             Toast.makeText(getApplicationContext(), "Please enter email...", Toast.LENGTH_LONG).show();
             return;
@@ -81,10 +84,7 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Please enter password!", Toast.LENGTH_LONG).show();
             return;
         }
-        if (TextUtils.isEmpty(username)) {
-            Toast.makeText(getApplicationContext(), "Please enter username!", Toast.LENGTH_LONG).show();
-            return;
-        }
+
         Query usernameQuery=FirebaseDatabase.getInstance().getReference().child("Users").orderByChild("username").equalTo(username);
         usernameQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -100,6 +100,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     if(task.isSuccessful()){
                                         final Map newMap= new HashMap();
                                         newMap.put("username",username);
+                                        newMap.put("userId",task.getResult().getUser().getUid());
                                         myRef.child(task.getResult().getUser().getUid()).updateChildren(newMap);
                                         Toast.makeText(RegisterActivity.this, "Registration Completed", Toast.LENGTH_SHORT).show();
                                         Intent logIntent =new Intent(RegisterActivity.this,LoginActivity.class);

@@ -59,18 +59,6 @@ public class ProfileImageActivity extends AppCompatActivity {
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         mStorageRef = FirebaseStorage.getInstance().getReference("ProfilePhoto");
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("Users");
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String username = dataSnapshot.child("username").getValue(String.class);
-                mTextViewShowUsername.setText(username);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
 
         mButtonChooseUpload.setOnClickListener(new View.OnClickListener() {
             @Override
