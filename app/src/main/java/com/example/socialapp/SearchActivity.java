@@ -16,6 +16,8 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+        
+
 
         //.....................Bottom Navigation...........................................
         BottomNavigationView bottomNavigationView=findViewById(R.id.bottom_navigation);

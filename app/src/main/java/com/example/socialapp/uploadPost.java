@@ -90,7 +90,7 @@ public class uploadPost extends AppCompatActivity {
         mTextViewShowProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent show_profile =new Intent(uploadPost.this,ImagesActivity.class);
+                Intent show_profile =new Intent(uploadPost.this,ProfileActivity.class);
                 startActivity(show_profile);
 
             }
@@ -123,6 +123,9 @@ public class uploadPost extends AppCompatActivity {
                                         newPost.put("userId",user.getUid());
                                         String uploadId = mDatabaseRef.push().getKey();
                                         mDatabaseRef.child(uploadId).setValue(newPost);
+                                        Intent show_profile =new Intent(uploadPost.this,MainActivity.class);
+                                        startActivity(show_profile);
+
                                     }
                                 });
 
