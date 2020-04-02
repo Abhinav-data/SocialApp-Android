@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     SwipeRefreshLayout swipeRefreshLayout;
 
-    private DatabaseReference mDatabaseRef;
+    private DatabaseReference mDatabaseRef, myRef;
     private List<Upload> mUploads;
 
     @Override
@@ -51,21 +51,34 @@ public class MainActivity extends AppCompatActivity {
             mRecyclerView.setHasFixedSize(true);
             mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
             mUploads = new ArrayList<>();
+            final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
+            myRef = FirebaseDatabase.getInstance().getReference("Users").child(user.getUid()).child("Friends");
             mDatabaseRef.addValueEventListener(new ValueEventListener() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//                    if (f) {
+                public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
+
+                    if (f) {
                         for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                            Upload upload = postSnapshot.getValue(Upload.class);
-                            mUploads.add(upload);
+                            final Upload upload = postSnapshot.getValue(Upload.class);
+                            myRef.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot ds) {
+                                    if (ds.hasChild(upload.getUserId()) || user.getUid().equals(upload.getUserId())) {
+                                        mUploads.add(upload);
+                                        mAdapter = new ImageAdapter(MainActivity.this, mUploads);
+                                        mRecyclerView.setAdapter(mAdapter);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                }
+                            });
+                            f = false;
                         }
-                        mAdapter = new ImageAdapter(MainActivity.this, mUploads);
-                        mRecyclerView.setAdapter(mAdapter);
-                        f = false;
                     }
-//                }
+                }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
