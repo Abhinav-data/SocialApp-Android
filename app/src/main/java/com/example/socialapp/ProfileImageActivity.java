@@ -107,7 +107,10 @@ public class ProfileImageActivity extends AppCompatActivity {
                                     newPost.put("profileImageUrl",uri.toString());
                                     mDatabaseRef.child(user.getUid()).updateChildren(newPost);
                                     Intent show_profile =new Intent(ProfileImageActivity.this,ProfileActivity.class);
+                                    finish();
+                                    overridePendingTransition(0, 0);
                                     startActivity(show_profile);
+                                    overridePendingTransition(0, 0);
                                 }
                             });
                         }

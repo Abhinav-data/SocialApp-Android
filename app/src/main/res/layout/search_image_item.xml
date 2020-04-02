@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginLeft="10dp"
-        android:id="@+id/profileLinear"
+        android:id="@+id/linearLayout"
         android:layout_marginRight="10dp">
 
         <androidx.cardview.widget.CardView

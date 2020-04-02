@@ -43,18 +43,20 @@ public class ProfileActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
     private ProfileImageAdapter mAdapter;
-    boolean f=true;
+    boolean f = true, k = true, j = false;
 
     private DatabaseReference mDatabaseRef;
     private List<Upload> mUploads;
 
     EditText statusTV;
-    Button submit, logout, uploadPost;
+    Button submit, logout, uploadPost, mAddFriend, mRemoveFriend;
     TextView yStatus, uName;
     ImageView profileImage;
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference myRef = database.getReference().child("Users").child(user.getUid());
+    private DatabaseReference myRef = database.getReference().child("Users");
+    private String name;
+    String name1;
 
 
     @Override
@@ -62,12 +64,44 @@ public class ProfileActivity extends AppCompatActivity {
         Log.i("Reached Profile", "Success");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        profileImage = findViewById(R.id.profileImage);
 
+
+        Bundle bundle = getIntent().getExtras();
+        try {
+            name1 = bundle.getString("userId");
+        } catch (Exception e) {
+            name1 = user.getUid();
+        }
+
+        name = name1;
+        profileImage = findViewById(R.id.profileImage);
         mRecyclerView = findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this,2));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         mUploads = new ArrayList<>();
+        mAddFriend = findViewById(R.id.addFriend);
+
+        if (!name.equals(user.getUid())) {
+            mAddFriend.setAlpha(1);
+            myRef.child(user.getUid()).child("Friends").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.hasChild(name)){
+                        mAddFriend.setText("UnFollow");
+                    }else{
+                        mAddFriend.setText("Follow");
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+
+        }
+
 
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
@@ -77,14 +111,14 @@ public class ProfileActivity extends AppCompatActivity {
                 if (f) {
                     for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                         Upload upload = postSnapshot.getValue(Upload.class);
-                        if(upload.getUserId().equals(user.getUid())) {
+                        if (upload.getUserId().equals(name)) {
                             mUploads.add(upload);
                         }
 
                     }
                     mAdapter = new ProfileImageAdapter(ProfileActivity.this, mUploads);
                     mRecyclerView.setAdapter(mAdapter);
-                    f=false;
+                    f = false;
                 }
 
             }
@@ -96,11 +130,11 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
 
-        myRef.addValueEventListener(new ValueEventListener() {
+        myRef.child(name).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            String image = "" + dataSnapshot.child("profileImageUrl").getValue();
-            Picasso.get().load(image).placeholder(R.drawable.ic_account).fit().centerCrop().into(profileImage);
+                String image = "" + dataSnapshot.child("profileImageUrl").getValue();
+                Picasso.get().load(image).placeholder(R.drawable.ic_account).fit().centerCrop().into(profileImage);
 
             }
 
@@ -110,36 +144,35 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton floatingActionButton=findViewById(R.id.floating_action);
+        FloatingActionButton floatingActionButton = findViewById(R.id.floating_action);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
-                Intent loginIntent=new Intent(ProfileActivity.this,LoginActivity.class);
+                Intent loginIntent = new Intent(ProfileActivity.this, LoginActivity.class);
                 startActivity(loginIntent);
 
             }
         });
 
 
-
         //.....................Bottom Navigation...........................................
 
-        BottomNavigationView bottomNavigationView=findViewById(R.id.bottom_navigation);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.about);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch(menuItem.getItemId()){
+                switch (menuItem.getItemId()) {
                     case R.id.about:
                         return true;
                     case R.id.Dashboard:
-                        startActivity(new Intent(ProfileActivity.this,SearchActivity.class));
-                        overridePendingTransition(0,0);
+                        startActivity(new Intent(ProfileActivity.this, SearchActivity.class));
+                        overridePendingTransition(0, 0);
                         return true;
                     case R.id.home:
-                        startActivity(new Intent(ProfileActivity.this,MainActivity.class));
-                        overridePendingTransition(0,0);
+                        startActivity(new Intent(ProfileActivity.this, MainActivity.class));
+                        overridePendingTransition(0, 0);
                         return true;
 
                 }
@@ -152,36 +185,21 @@ public class ProfileActivity extends AppCompatActivity {
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent profileImageIntent=new Intent(ProfileActivity.this,ProfileImageActivity.class);
+                Intent profileImageIntent = new Intent(ProfileActivity.this, ProfileImageActivity.class);
                 startActivity(profileImageIntent);
             }
         });
 
 
-        retrieveDataFromDB();
-//        submit.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                addDataInDatabase();
-//            }
-//        });
-        //..........................Profile Stuff......................................................................
-
-    }
-
-    private void retrieveDataFromDB() {
-//        yStatus=findViewById(R.id.yourStatus);
-//        statusTV = (EditText) findViewById(R.id.statusValue);
-
-        uName=findViewById(R.id.uName);
+        uName = findViewById(R.id.uName);
 //        submit = (Button) findViewById(R.id.btnSubmit);
-        myRef.addValueEventListener(new ValueEventListener() {
+        myRef.child(name).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 //                    String status = dataSnapshot.child("status").getValue(String.class);
-                    String uName1 = dataSnapshot.child("username").getValue(String.class);
+                String uName1 = dataSnapshot.child("username").getValue(String.class);
 //                    yStatus.setText(status);
-                    uName.setText(uName1);
+                uName.setText(uName1);
 
             }
 
@@ -190,14 +208,22 @@ public class ProfileActivity extends AppCompatActivity {
                 Toast.makeText(ProfileActivity.this, "Unable to fetch", Toast.LENGTH_SHORT).show();
             }
         });
+        //..........................Profile Stuff......................................................................
+
     }
 
 
-//    private void addDataInDatabase() {
-//        final Map newMap = new HashMap();
-//        newMap.put("status", statusTV.getText().toString().trim());
-//        myRef.updateChildren(newMap);
-//        Toast.makeText(ProfileActivity.this, "Saved In DB", Toast.LENGTH_SHORT).show();
-//    }
+    public void Add_RemoveFriend(View view) {
+        if(mAddFriend.getText().equals("UnFollow")){
+            myRef.child(user.getUid()).child("Friends").child(name).removeValue();
+            mAddFriend.setText("Follow");
 
+        }else{
+            Map newMap = new HashMap();
+            newMap.put(name, name);
+            myRef.child(user.getUid()).child("Friends").updateChildren(newMap);
+            mAddFriend.setText("UnFollow");
+        }
+
+    }
 }

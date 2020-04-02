@@ -30,49 +30,35 @@
             android:id="@+id/uName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="140dp"
-            android:layout_marginTop="50dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="30dp"
+            android:layout_toRightOf="@+id/CardView"
             android:text="Your Name"
             android:textAlignment="center"
             android:textColor="@android:color/black"
             android:textSize="30dp" />
 
-<!--        <TextView-->
-<!--            android:id="@+id/yourStatus"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_below="@+id/uName"-->
-<!--            android:layout_centerHorizontal="true"-->
-<!--            android:layout_marginTop="15dp"-->
-<!--            android:text="Your Status"-->
-<!--            android:textColor="@android:color/black"-->
-<!--            android:textSize="20dp" />-->
-
         <Button
-            android:id="@+id/logOut"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_below="@+id/btnSubmit"
-            android:text="Logout" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/CardView"
+        android:layout_marginLeft="40dp"
+        android:text="Follow"
+            android:alpha="0"
+        android:background="#6A89CC"
+        android:id="@+id/addFriend"
+        android:onClick="Add_RemoveFriend"
+        android:layout_marginTop="80dp"/>
 
-        <EditText
-            android:id="@+id/statusValue"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:hint="Status" />
 
-        <Button
-            android:id="@+id/btnSubmit"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:text="Submit" />
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/CardView"
-            android:layout_margin="10dp"
+            android:layout_margin="20dp"
             />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView

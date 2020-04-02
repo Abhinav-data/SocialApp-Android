@@ -1,10 +1,12 @@
 package com.example.socialapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -44,6 +46,14 @@ public class SearchImageAdapter extends RecyclerView.Adapter<SearchImageAdapter.
     @Override
     public void onBindViewHolder(@NonNull final SearchViewHolder holder, int position) {
         final Upload uploadCurrent = mUploads.get(getItemCount()-position-1);
+        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(mContext,ProfileActivity.class);
+                intent.putExtra("userId",uploadCurrent.getUserId());
+                mContext.startActivity(intent);
+            }
+        });
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("Users").child(uploadCurrent.getUserId());
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -72,14 +82,16 @@ public class SearchImageAdapter extends RecyclerView.Adapter<SearchImageAdapter.
         return mUploads.size();
     }
 
-    public static class SearchViewHolder extends RecyclerView.ViewHolder{
-        public TextView postUser;
-        public ImageView profileImage;
+    public class SearchViewHolder extends RecyclerView.ViewHolder{
+        TextView postUser;
+        ImageView profileImage;
+        LinearLayout linearLayout;
 
         public SearchViewHolder(View itemView){
             super(itemView);
             postUser=itemView.findViewById(R.id.postUsername);
             profileImage=itemView.findViewById(R.id.profileImage);
+            linearLayout=itemView.findViewById(R.id.linearLayout);
         }
     }
 }

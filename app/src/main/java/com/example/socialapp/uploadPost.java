@@ -124,7 +124,10 @@ public class uploadPost extends AppCompatActivity {
                                         String uploadId = mDatabaseRef.push().getKey();
                                         mDatabaseRef.child(uploadId).setValue(newPost);
                                         Intent show_profile =new Intent(uploadPost.this,MainActivity.class);
+                                        finish();
+                                        overridePendingTransition(0, 0);
                                         startActivity(show_profile);
+                                        overridePendingTransition(0, 0);
 
                                     }
                                 });

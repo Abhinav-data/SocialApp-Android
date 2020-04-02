@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    if (f) {
+//                    if (f) {
                         for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                             Upload upload = postSnapshot.getValue(Upload.class);
                             mUploads.add(upload);
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                         mRecyclerView.setAdapter(mAdapter);
                         f = false;
                     }
-                }
+//                }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
