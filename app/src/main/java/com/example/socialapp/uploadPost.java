@@ -116,13 +116,14 @@ public class uploadPost extends AppCompatActivity {
                                     @Override
                                     public void onSuccess(Uri uri) {
                                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                        String uploadId = mDatabaseRef.push().getKey();
                                         final Map newPost=new HashMap();
                                         newPost.put("name",mEditTextFileName.getText().toString().trim());
                                         Uri downloadUrl=uri;
                                         newPost.put("imageUrl",uri.toString());
                                         newPost.put("userId",user.getUid());
-                                        String uploadId = mDatabaseRef.push().getKey();
-                                        mDatabaseRef.child(uploadId).setValue(newPost);
+                                        newPost.put("uploadId",uploadId);
+                                        mDatabaseRef.child(uploadId).updateChildren(newPost);
                                         Intent show_profile =new Intent(uploadPost.this,MainActivity.class);
                                         finish();
                                         overridePendingTransition(0, 0);

@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:id="@+id/linearLayout"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp">
 
@@ -38,7 +39,7 @@
         <ImageView
             android:id="@+id/image_view_upload"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="250dp"
             android:layout_marginTop="15dp"
             android:maxHeight="700dp"/>
         <TextView
@@ -47,7 +48,40 @@
             android:layout_height="wrap_content"
             android:text="Your Caption"
             android:textSize="20dp"
+            android:textColor="#000"
             android:layout_margin="10dp"/>
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+            <ImageView
+                android:id="@+id/like"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="30dp"
+                android:padding="8dp"
+                android:src="@drawable/ic_thumb_up"
+                android:onClick="Add_RemoveLike"
+
+                android:tag="UnLiked"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="0 Likes"
+                android:textSize="15dp"
+                android:id="@+id/likeText"
+                android:textColor="#000"
+                android:layout_marginLeft="90dp"
+                android:layout_marginTop="15dp"/>
+
+            <ImageView
+                android:id="@+id/comment"
+                android:layout_width="49dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="290dp"
+                android:padding="8dp"
+                android:src="@drawable/ic_comment" />
+        </androidx.cardview.widget.CardView>
 
     </LinearLayout>
 

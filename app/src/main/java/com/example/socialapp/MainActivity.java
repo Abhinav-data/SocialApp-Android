@@ -4,12 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 //import android.widget.Toolbar;
 import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -34,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     SwipeRefreshLayout swipeRefreshLayout;
+    private ImageView likeImage;
 
     private DatabaseReference mDatabaseRef, myRef;
     private List<Upload> mUploads;
@@ -47,13 +51,16 @@ public class MainActivity extends AppCompatActivity {
             startActivity(loginIntent);
         } else {
             setContentView(R.layout.activity_main);
+
             mRecyclerView = findViewById(R.id.recycler_view);
+            likeImage=findViewById(R.id.like);
             mRecyclerView.setHasFixedSize(true);
             mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
             mUploads = new ArrayList<>();
             final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
             myRef = FirebaseDatabase.getInstance().getReference("Users").child(user.getUid()).child("Friends");
+
             mDatabaseRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
@@ -131,6 +138,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             //.....................Bottom Navigation...........................................
+
+
 
 
         }
