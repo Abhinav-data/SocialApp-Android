@@ -1,10 +1,12 @@
 package com.example.socialapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -44,6 +46,7 @@ public class ProfileImageAdapter extends RecyclerView.Adapter<ImageAdapter.Image
     @Override
     public void onBindViewHolder(@NonNull final ImageAdapter.ImageViewHolder holder, int position) {
         final Upload uploadCurrent = mUploads.get(getItemCount()-position-1);
+
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("Users").child(uploadCurrent.getUserId());
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -72,12 +75,14 @@ public class ProfileImageAdapter extends RecyclerView.Adapter<ImageAdapter.Image
     public class ImageViewHolder extends RecyclerView.ViewHolder {
         public TextView textViewName,postUser;
         public ImageView imageView,profileImage;
+        LinearLayout linearLayout;
 
 
         public ImageViewHolder(View itemView) {
             super(itemView);
 
             imageView = itemView.findViewById(R.id.image_view_upload);
+            linearLayout=itemView.findViewById(R.id.linearLayout);
         }
     }
 

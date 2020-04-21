@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot ds) {
                                     if (ds.hasChild(upload.getUserId()) || user.getUid().equals(upload.getUserId())) {
+
                                         mUploads.add(upload);
                                         mAdapter = new ImageAdapter(MainActivity.this, mUploads);
                                         mRecyclerView.setAdapter(mAdapter);

@@ -5,11 +5,19 @@
     app:cardCornerRadius="20dp"
     android:layout_margin="5dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/linearLayout"
+            android:layout_marginRight="10dp">
 
         <ImageView
             android:id="@+id/image_view_upload"
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_margin="10dp"/>
+        </LinearLayout>
 
 </androidx.cardview.widget.CardView>

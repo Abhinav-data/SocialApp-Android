@@ -9,10 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
@@ -20,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -56,17 +59,26 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     public void onBindViewHolder(@NonNull final ImageViewHolder holder, int position) {
 
         final Upload uploadCurrent = mUploads.get(getItemCount() - position - 1);
+        
+        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(mContext,ImageActivity.class);
+                intent.putExtra("uploadId",uploadCurrent.getUploadId());
+                mContext.startActivity(intent);
+            }
+        });
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("Users").child(uploadCurrent.getUserId());
-
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
                 String User = dataSnapshot.child("username").getValue().toString();
                 String image = "" + dataSnapshot.child("profileImageUrl").getValue();
                 holder.textViewName.setText(uploadCurrent.getName());
                 holder.postUser.setText(User);
                 Picasso.get()
                         .load(uploadCurrent.getImageUrl())
+                        .placeholder(R.drawable.ic_image_black_24dp)
                         .fit()
                         .centerInside()
                         .into(holder.imageView);
@@ -76,22 +88,37 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
                         .fit()
                         .centerCrop()
                         .into(holder.profileImage);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
 
-                myRef.child(uploadCurrent.getUploadId()).child("Likes").child(user.getUid()).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            DrawableCompat.setTint(holder.likeImage.getDrawable(), ContextCompat.getColor(mContext, R.color.colorAccent));
-                        } else {
-                            DrawableCompat.setTint(holder.likeImage.getDrawable(), ContextCompat.getColor(mContext, R.color.colorPrimary));
-                        }
-                    }
+        myRef.child(uploadCurrent.getUploadId()).child("Likes").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChild(user.getUid())) {
+                    DrawableCompat.setTint(holder.likeImage.getDrawable(), ContextCompat.getColor(mContext, R.color.colorAccent));
+                } else {
+                    DrawableCompat.setTint(holder.likeImage.getDrawable(), ContextCompat.getColor(mContext, R.color.colorPrimary));
+                }
+            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    }
-                });
+            }
+        });
+
+        myRef.child(uploadCurrent.getUploadId()).child("Likes").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Long like=dataSnapshot.getChildrenCount();
+                if(String.valueOf(like).equals("1")){
+                    holder.likeText.setText(String.valueOf(like)+" like");
+                }else {
+                    holder.likeText.setText(String.valueOf(like) + " likes");
+                }
             }
 
             @Override
@@ -137,9 +164,10 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     }
 
     public static class ImageViewHolder extends RecyclerView.ViewHolder {
-        public TextView textViewName, postUser;
+        public TextView textViewName, postUser,likeText;
         public ImageView imageView, profileImage, likeImage;
         CardView cardView;
+        LinearLayout linearLayout;
 
 
         public ImageViewHolder(View itemView) {
@@ -151,6 +179,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
             profileImage = itemView.findViewById(R.id.profileImage);
             cardView = itemView.findViewById(R.id.CardView);
             likeImage = itemView.findViewById(R.id.like);
+            likeText=itemView.findViewById(R.id.likeText);
+            linearLayout=itemView.findViewById(R.id.linearLayout);
         }
 
 
